@@ -3,7 +3,6 @@ __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
-*.pyc
 *.pdb
 *.egg
 *.egg-info/
@@ -40,11 +39,9 @@ docker-compose.override.yml
 *.pid
 *.sock
 
-# Kong
-*.yaml
-
-# Prometheus
-prometheus.yml
+# Kong & Prometheus - NÃO ignorar arquivos essenciais
+!/kong/kong.yaml
+!/prometheus/prometheus.yml
 
 # Pytest
 .cache
@@ -55,6 +52,5 @@ pytest_cache/
 *.swp
 *~
 
-# Others
+# Outros
 .idea/
-*.log

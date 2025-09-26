@@ -1,0 +1,64 @@
+_format_version: "3.0"
+_transform: true
+
+upstreams:
+  - name: backend
+    targets:
+      - target: backend:8000
+        weight: 100
+    healthchecks:
+      active:
+        http_path: /health/
+        headers:
+          Host: ["127.0.0.1"]
+
+services:
+  - name: product-service
+    host: backend
+    port: 8000
+    protocol: http
+    routes:
+      - name: product-route
+        paths:
+          - /api
+        strip_path: false
+        preserve_host: false  
+
+  - name: drf-metrics-service
+    host: backend
+    port: 8000
+    protocol: http
+    routes:
+      - name: drf-metrics-route
+        paths:
+          - /metrics
+        strip_path: false
+        preserve_host: true
+    plugins:
+      - name: prometheus
+        config: {}
+
+  - name: kong-metrics-service
+    host: localhost
+    port: 8100
+    protocol: http
+    routes:
+      - name: kong-metrics-route
+        paths:
+          - /kong-metrics
+        strip_path: false
+        preserve_host: false
+    plugins:
+      - name: prometheus
+        config: {}
+
+plugins:
+  - name: rate-limiting
+    service: product-service
+    config:
+      minute: 1000
+      policy: redis
+      redis_host: redis
+      redis_port: 6379
+      redis_timeout: 2000
+      fault_tolerant: true
