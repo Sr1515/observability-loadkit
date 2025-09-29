@@ -11,6 +11,11 @@ reset:
 	make off & make build & make run
 
 mk:
-	python3 manage.py makemigrations
+	docker compose exec backend python manage.py makemigrations
+
 mg:
-	python3 manage.py migrate
+	docker compose exec backend python manage.py migrate
+
+logs:
+	docker compose logs -f 
+
